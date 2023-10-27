@@ -61,4 +61,32 @@ public class ProductStoreRepository : IProductStoreRepository
         }
 
     }
+
+    public async Task<int> CreateTemplate(TemplateCreateDto templateCreateDto)
+    {
+        try
+        {
+            using var connection = _dapperContext.CreateConnection();
+            var model = await connection.ExecuteAsync(ProductStoreQueries.InsertTemplates(templateCreateDto), commandTimeout: 0);
+            return model;
+        }
+        catch (Exception e)
+        {
+            throw new Exception(e.Message);
+        }
+    }
+
+    public async Task<TemplateModel> ObterTemplate(int tipoTemplate)
+    {
+        try
+        {
+            using var connection = _dapperContext.CreateConnection();
+            var model = await connection.QueryFirstAsync<TemplateModel>(ProductStoreQueries.GetTemplate(tipoTemplate), commandTimeout: 0);
+            return model;
+        }
+        catch (Exception e)
+        {
+            throw new Exception(e.Message);
+        }
+    }
 }

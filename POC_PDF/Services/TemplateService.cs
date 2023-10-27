@@ -1,4 +1,6 @@
-﻿using POC_PDF.Services.Interfaces;
+﻿using POC_PDF.Models.Enum;
+using POC_PDF.Repositories.Interfaces;
+using POC_PDF.Services.Interfaces;
 using RazorLight;
 using WkHtmlToPdfDotNet;
 
@@ -9,6 +11,7 @@ public class TemplateService : ITemplateService
     private readonly RazorLightEngine _engine;
     private readonly ITextTemplate _template;
 
+
     public TemplateService(ITextTemplate template)
     {
         _engine = new RazorLightEngineBuilder()
@@ -17,18 +20,18 @@ public class TemplateService : ITemplateService
             .Build();
         _template = template;
     }
-    public async Task<string> RenderTemplate<TData>(string template, TData data)
+    public async Task<string> RenderTemplate<TData>(string template, TData data, int tipoTemplateEnum)
     {
         
-        var content = await _template.RetrieveAsync(template);
-
+        var content = await _template.RetrieveAsync(tipoTemplateEnum);
+        
         var cachedTemplate = _engine.Handler.Cache.RetrieveTemplate(template);
         if (cachedTemplate.Success)
         {
             return await _engine.RenderTemplateAsync(cachedTemplate.Template.TemplatePageFactory(), data);
         }
 
-        return await _engine.CompileRenderStringAsync(template,content,data,null);
+        return await _engine.CompileRenderStringAsync(template,content.Template,data,null);
     }
 
     public Task<string> GetPdf(string html)

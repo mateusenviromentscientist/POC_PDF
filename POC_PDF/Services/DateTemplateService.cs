@@ -18,7 +18,7 @@ public class DateTemplateService : IDataTemplateService
     private readonly IProductStoreService _productStoreService;
     private readonly ITemplateService _templateService;
     
-    public async Task<string> GetTemplate(RenderType renderType, LanguageEnum cultureInfo)
+    public async Task<string> GetTemplate(RenderType renderType, LanguageEnum cultureInfo, TipoTemplateEnum? tipoTemplateEnum)
     {
         try
         {
@@ -33,12 +33,12 @@ public class DateTemplateService : IDataTemplateService
             {
                 case RenderType.Html:
                     template = await _templateService.RenderTemplate("ProductView",
-                        new ProducsViewModels(templateModel, GetViewProduct(rm, GetCultureInfo(cultureInfo))));
+                        new ProducsViewModels(templateModel, GetViewProduct(rm, GetCultureInfo(cultureInfo))),(int)TipoTemplateEnum.Store);
                     break;
                 case RenderType.Pdf:
                 {
                     var modelTemplate = await _templateService.RenderTemplate("ProductView",
-                        new ProducsViewModels(templateModel, GetViewProduct(rm, GetCultureInfo(cultureInfo))));
+                        new ProducsViewModels(templateModel, GetViewProduct(rm, GetCultureInfo(cultureInfo))),(int)TipoTemplateEnum.Store);
                     resultString = await _templateService.GetPdf(modelTemplate);
                     break;
                 }

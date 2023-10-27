@@ -2,6 +2,6 @@
 
 public interface ITemplateService
 {
-    Task<string> RenderTemplate<TData>(string template, TData data);
+    Task<string> RenderTemplate<TData>(string template, TData data, int tipoTemplateEnum);
     Task<string> GetPdf(string html);
 }

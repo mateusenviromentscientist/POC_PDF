@@ -1,4 +1,5 @@
 ﻿using POC_PDF.Dtos;
+using POC_PDF.Models.Enum;
 using SqlKata;
 using SqlKata.Compilers;
 
@@ -32,6 +33,30 @@ public static class ProductStoreQueries
                 productDto.ProductDiscount,
                 productDto.ProductCategory
             });
+        
+        return compiler.Compile(query).ToString();
+    }
+    
+    public static string InsertTemplates(TemplateCreateDto templateCreateDto)
+    {
+        var compiler = new SqlServerCompiler();
+
+        var query = new Query("dbo.Templates")
+            .AsInsert(new
+            {
+                templateCreateDto.Template,
+                templateCreateDto.TipoTemplate
+            });
+        
+        return compiler.Compile(query).ToString();
+    }
+    
+    public static string GetTemplate(int tipoTempate)
+    {
+        var compiler = new SqlServerCompiler();
+
+       var query = new Query("dbo.Templates AS T")
+            .Select("T.Template AS Template").Where("T.TipoTemplate",tipoTempate);
         
         return compiler.Compile(query).ToString();
     }
