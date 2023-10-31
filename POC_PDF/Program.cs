@@ -18,6 +18,8 @@ builder.Services.AddScoped<IProductStoreService, ProductStoreService>();
 builder.Services.AddScoped<ITemplateService, TemplateService>();
 builder.Services.AddScoped<ITextTemplate, TextTemplateService>();
 builder.Services.AddScoped<IDataTemplateService, DateTemplateService>();
+builder.Services.Configure<MongoContext>(
+    builder.Configuration.GetSection("TemplateDatabase"));
 builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
 
 var app = builder.Build();
@@ -47,7 +49,7 @@ app.MapPost("Products", async (CreateProductDto createProductDto,IProductStoreSe
 
 app.MapGet("ProductsStoreData", async (RenderType renderType,LanguageEnum cultureInfo,IDataTemplateService service) =>
 {
-    var result = await service.GetTemplate(renderType, cultureInfo);
+    var result = await service.GetTemplate(renderType, cultureInfo,TipoTemplateEnum.Store);
     return Results.Ok(result);
 }).WithName("GetProductsDataStoreTemplate");
 

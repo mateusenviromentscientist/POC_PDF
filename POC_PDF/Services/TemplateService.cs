@@ -1,4 +1,5 @@
-﻿using POC_PDF.Models.Enum;
+﻿using POC_PDF.Dtos;
+using POC_PDF.Models.Enum;
 using POC_PDF.Repositories.Interfaces;
 using POC_PDF.Services.Interfaces;
 using RazorLight;
@@ -22,8 +23,8 @@ public class TemplateService : ITemplateService
     }
     public async Task<string> RenderTemplate<TData>(string template, TData data, int tipoTemplateEnum)
     {
-        
-        var content = await _template.RetrieveAsync(tipoTemplateEnum);
+        // var createTemplate = await _template.CreateTemplate(new TemplateCreateDto(), "ProductView", TipoTemplateEnum.Store);
+        var content = await _template.GetTemplateMongo(tipoTemplateEnum, false);
         
         var cachedTemplate = _engine.Handler.Cache.RetrieveTemplate(template);
         if (cachedTemplate.Success)
@@ -31,7 +32,7 @@ public class TemplateService : ITemplateService
             return await _engine.RenderTemplateAsync(cachedTemplate.Template.TemplatePageFactory(), data);
         }
 
-        return await _engine.CompileRenderStringAsync(template,content.Template,data,null);
+        return await _engine.CompileRenderStringAsync(template,content,data,null);
     }
 
     public Task<string> GetPdf(string html)

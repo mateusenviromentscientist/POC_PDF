@@ -1,4 +1,5 @@
-﻿using POC_PDF.Dtos;
+﻿using MongoDB.Bson;
+using POC_PDF.Dtos;
 using POC_PDF.Models;
 using POC_PDF.Models.Enum;
 using POC_PDF.Repositories.Interfaces;
@@ -18,7 +19,11 @@ public class TextTemplateService : ITextTemplate
 
     public async Task<TemplateModel> RetrieveAsync(int tipoTemplateEnum) =>
         await _productStoreRepository.ObterTemplate(tipoTemplateEnum);
+
+    public async Task<string> GetTemplateMongo(int tipoTemplateEnum, bool isHeader) =>
+        await _productStoreRepository.GetTemplateMongo(tipoTemplateEnum, isHeader);
     
+
     public async Task<int> CreateTemplate(TemplateCreateDto templateCreateDto, string name, TipoTemplateEnum tipoTemplateEnum)
     {
         var template = "";
@@ -36,6 +41,15 @@ public class TextTemplateService : ITextTemplate
                 Template = template,
                 TipoTemplate = TipoTemplateEnum.Store
             };
+            var dtoMongo = new MongoModel
+            {
+                Id = new ObjectId().ToString(),
+                Template = template,
+                isHeader = false,
+                TipoTemplate = (int)TipoTemplateEnum.Store
+            }; 
+            
+            await _productStoreRepository.CrateTemplateMongo(dtoMongo);
            return await _productStoreRepository.CreateTemplate(dto);
         }
         catch (Exception e)

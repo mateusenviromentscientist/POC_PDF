@@ -12,4 +12,6 @@ public interface IProductStoreRepository
     Task<Product> GetById(int id);
     Task<TemplateModel> ObterTemplate(int tipoTemplate);
     Task<int> CreateTemplate(TemplateCreateDto templateCreateDto);
+    Task CrateTemplateMongo(MongoModel templateCreateDto);
+    Task<string> GetTemplateMongo(int tipoTemplateEnum, bool isHeader);
 }
